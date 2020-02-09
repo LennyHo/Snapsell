@@ -3,8 +3,6 @@
     padding: 0;
 }
 
-/* navigation bar */
-
 .navbar {
     font-size: 23px;
 }
@@ -17,6 +15,11 @@
     padding: 20px;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+/* .Offer{
+padding: 20px;
+text-align: right;
+} */
 
 .card-product .img-wrap {
     border-radius: 3px 3px 0 0;
@@ -36,15 +39,11 @@
     overflow: hidden;
     padding: 15px;
     border-top: 1px solid #eee;
-    color: #E0E0E0;
-    background-color: #404040;
 }
 
 .card-product .bottom-wrap {
     padding: 15px;
-    border-top: 1px solid rgb(10, 10, 10);
-    color: #ffffff;
-    background-color: #808080;
+    border-top: 1px solid #eee;
 }
 
 .label-rating {
@@ -62,8 +61,23 @@
     margin-top: 5px;
 }
 
+.homepage {
+    position: relative;
+    left: 21px;
+}
+
 /* title */
 
 h3 {
+    font-size: 50px;
+}
+
+.form-group {
+    color: black;
+    font-size: 23px;
+    font-family: 'Varela Round', sans-serif;
+}
+
+h1 {
     font-size: 50px;
 }

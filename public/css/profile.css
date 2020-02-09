@@ -1,0 +1,14 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* navigation bar */
+
+.navbar {
+    font-size: 23px;
+}
+
+.nav-link, .nav-item {
+    color: white;
+}

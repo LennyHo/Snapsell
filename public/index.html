@@ -1,3 +1,14 @@
+<!--
+=================================
+Class: 1B06
+
+Admission Number: 1949913
+
+Name: Ho Yean Kit
+=================================
+-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,38 +16,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>homepage</title>
+    <title>Login</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <link rel="stylesheet" href="./css/index.css">
+
+    <!-- link -->
+    <link href="https://fonts.googleapis.com/css?family=Pacifico|Varela+Round&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/index.css">
 </head>
 
 <body>
-
     <div class="container">
-        <!-- <nav class="nav">
-            <a class="nav-link" href="/">Home</a>
-            <a class="nav-link" href="/users/">All Users</a>
-            <a class="nav-link" href="/users/">All Users</a>
 
-        </nav> -->
+        <div class="title">
+            Welcome to SnapSell
+        </div>
 
         <h1>Login</h1>
-        <p>Don't have an account?</p>
+
+        <!-- form id -->
+        <!-- values is to save the information -->
         <form id="login-form">
+
+            <!-- username -->
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" class="form-control" id="username" value="vip">
             </div>
+
+            <!-- password -->
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" value="123">
+                <!-- when the user enter the wrong password, it will appears -->
+                <small id="wrongpassword" class="form-text text-danger" style="display: none;">You entered the wrong password.</small>
             </div>
+
+            <!-- submit -->
+            <!-- type is to link to script in order to prevent from the page to 
+            submit without the user credentials info -->
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
     </div>
 
 
+    <!-- j query -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
@@ -45,44 +70,58 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+
+    <!-- axios -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script>
-
         // url is connected to the back end server
         const baseUrl = "http://localhost:5595";
 
+        // only when the button "submit" is press, it will push to id = login-form
         $("#login-form").submit((event) =>
         {
-            // prevent page reload
+            // prevent page to reload
             event.preventDefault();
+            $('#wrongpassword').hide();
 
+            // to key in the user details
             const username = $("#username").val();
             const password = $("#password").val();
 
-            console.log(username, password);
-
+            // keyword objective
             const requestBody = {
                 username: username,
                 password: password
             };
 
             // to await for the back end to respond
+            // connect to the internet
+            // http://localhost:5595/login
             axios.post(`${baseUrl}/login`, requestBody)
                 .then((response) =>
                 {
-                    console.log(response);
+                    // console.log(axios);
                     const token = response.data.token;
+
+                    // to response the userid
                     const loggedInUserID = response.data.user_id;
-                    // key values
+
+                    // key values to store the user info into a localstorage
                     localStorage.setItem("token", token);
                     localStorage.setItem("loggedInUserID", loggedInUserID);
+
+                    // it will automatically go to listings
                     window.location.href = "/listings";
                 })
+                // if there is an error, it will display an "error".
                 .catch((error) =>
                 {
+                    $('#wrongpassword').show();
+                    console.log('cp11');
                     console.log(error);
                 });
+
         });
     </script>
 

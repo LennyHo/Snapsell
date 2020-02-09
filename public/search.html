@@ -1,0 +1,256 @@
+<!--
+=================================
+Class: 1B06
+
+Admission Number: 1949913
+
+Name: Ho Yean Kit
+=================================
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Search</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- link rel -->
+    <link rel="stylesheet" href="./css/search.css">
+</head>
+
+<body>
+
+    <!-- navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="listings.html">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="search.html">Search</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="sell.html">Sell</a>
+                </li>
+
+                <!-- to logout -->
+                <li class="nav-item">
+                    <a id="logoutbutton" class="nav-link" style="cursor: pointer"></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="container">
+        <div class="homepage">
+            <div class="alert alert-success" id="success-alert" style="display: none;">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Hurray!</strong> The offer has been made successfully.
+            </div>
+
+            <!-- search title-->
+            <h3>Search</h3>
+            <small id="searchinfo" class="form-text text-muted">Search your favourite book and place your
+                offer.</small>
+
+            <div class="row">
+                <div class="input-group custom-search-form">
+                    <input id="searchbooks" type="text" class="form" size="35">
+                    <span class="input-group-btn">
+                        <button class="btn btn-dark" type="button" id="searchbutton">
+                            search
+                        </button>
+                    </span>
+                </div><!-- /input-group -->
+            </div>
+            <br />
+
+            <!-- search -->
+            <div id="search" class="row">
+            </div>
+
+
+
+            <!-- pop up modal/ offer -->
+            <!-- to pop up if the user wants to make an offer -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Offer: </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="offerprice" class="col-form-label">Price:</label>
+                                    <input type="number" class="form-control" id="offerprice">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id="submitOffer" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- j query -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+        <!-- axio -->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+
+        <!-- javascript -->
+        <script>
+
+            // variable to set 0 for the input
+            var bookId = 0;
+            const baseUrl = "http://localhost:5595";
+            var token = localStorage.getItem("token");
+            if(token){
+                $('#logoutbutton').text('Logout');
+            } else {
+                $('#logoutbutton').text('Login');
+            }
+
+            // push to id = searchbutton
+            $('#searchbutton').click(function ()
+            {
+                // url is connected to the back end server
+                var searchQuery = $('#searchbooks').val();
+
+                // .empty() is if press the search, the current content should be clear.
+                $('#search').empty();
+
+
+                // =================
+                // search
+                // =================
+
+                // to await for the back end to respond
+                // http://localhost:5595/search/books
+                axios.get(`${baseUrl}/search/books?q=${searchQuery}`, { headers: { Authorization: `Bearer ${token}` } }).then((response) =>
+                {
+                    // testing
+                    console.log(response);
+
+                    var search = '';
+                    // if the response is sucuess, it will repsonse.
+                    for (let item of response.data) {
+                        search += `<div class="col-md-3">
+                        <figure class="card card-product">
+                            <div class="img-wrap"><img src="${item.profile_pic_url}"></div>
+                            <figcaption class="info-wrap">
+                                <h4 class="title">${item.title}</h4>
+                                <p class="desc">"${item.description}"</p>
+                            </figcaption>
+                            <div class="bottom-wrap">
+                                <div class="price-wrap h5">
+                                    <span class="price-new">Price:  $${item.price}</span>
+                                </div>
+                                <a onclick="makeOffer(${item.id})" class="btn btn-dark">Make an offer</a>
+                            </div>
+                        </figure>
+                    </div>`
+                    };
+
+                    // search push to listings in listings.html 
+                    $('#search').append(search);
+
+                    // .catch() is used to handle responses that have an error code that is not 2xx.
+                }).catch((error) =>
+                {
+                    console.log(error);
+                });
+
+            });
+
+            // make an offer
+            function makeOffer(itemId)
+            {
+                // testing
+                console.log(itemId);
+
+                bookId = itemId;
+
+                // to pop the modal
+                $('#exampleModal').modal('show');
+            }
+
+            // submit the offer when the button is click
+            $('#submitOffer').click(() =>
+            {
+
+                var offer = $('#offerprice').val();
+                $('#offerprice').empty();
+
+                // =================
+                // offers
+                // =================
+
+                // to await for the back end to respond
+                // http://localhost:5595/search/books
+                axios.post(`${baseUrl}/listings/offers`, { offer, FK_book_id: bookId }, { headers: { Authorization: `Bearer ${token}` } }).then((response) =>
+                {
+                    // testing
+                    console.log(response);
+
+                    $('#exampleModal').modal('hide');
+                    $('#success-alert').show();
+                    setTimeout(() => {
+                        $('#success-alert').hide();
+                    }, 3000);
+
+
+                    // .catch() is used to handle responses that have an error code that is not 2xx.
+                }).catch((error) =>
+                {
+                    console.log(error);
+                });
+
+            });
+
+            $('#logoutbutton').click(function (){
+                // testing
+                console.log('testing');
+
+                localStorage.removeItem("token");
+                localStorage.removeItem("loggedInUserID");
+                window.location.href = "/";
+            });
+
+        </script>
+
+</body>
+
+</html>
